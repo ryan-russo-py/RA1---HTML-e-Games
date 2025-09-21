@@ -1,0 +1,79 @@
+// Definindo Nome de variáveis  
+  let playerX = 200
+  let playerY = 350
+  let playerSize = 20
+  
+  let obsX;
+  let obsY;
+  let obsSize = 50
+  let obsSpeed = 7
+  let playerPontos = 0
+  
+  let gameOver = false
+
+function setup() {
+  createCanvas(400, 400);
+  obsX = random(width - obsSize);
+  obsY = 0;
+}
+  
+function draw() {
+  background(220);
+
+// Fluxo do Jogo caso o jogador não bater no obstáculo
+if (!gameOver) {
+      obsY += obsSpeed
+    }
+  // Sistema de pontos e aumento de velocidade de acordo com cada barreira desviada 
+  if (obsY > height && obsY > (playerX + playerSize)) {
+    obsX = random(width - obsSize);
+    obsY = 0
+    obsSpeed += 0.5
+    playerPontos += 1
+  }
+  // Controles
+  if (keyIsDown(LEFT_ARROW)) {
+    playerX -= 4
+  }
+  if (keyIsDown(RIGHT_ARROW)) {
+    playerX += 4
+  }
+    playerX = constrain(playerX, 0, width - playerSize)
+
+
+// Desenhos e textos do jogo
+fill(0)
+rect(playerX, playerY, playerSize, playerSize);
+
+fill(0)
+  rect(obsX, obsY, obsSize, obsSize)
+
+fill(0)
+  text("Barreiras desviadas: " + playerPontos, 10, 20)
+
+// Sistema de caso o jogador atingir a barreira
+  if (!gameOver) {
+  // Faz com que o jogador perca o jogo no caso de atingir a barreira
+    if (colidiu(playerX, playerY, playerSize, obsX, obsY, obsSize))     {
+        gameOver = true
+    }
+  // Aviso de Game Over e pontuação final do jogador
+    } else {
+      fill(255, 0, 0);
+      textSize(30);
+      textAlign(CENTER, CENTER);
+      text("Game Over!", width / 2, 140);
+      fill(0)
+      text("Você desviou de " + playerPontos + " barreiras!", width / 2, height / 2)
+      noLoop();
+    }
+}
+// Lógica do encontro dos dois retângulos   
+function colidiu(px, py, pSize, ox, oy, oSize) {
+  return (
+    px < ox + oSize &&
+    px + pSize > ox &&
+    py < oy + oSize &&
+    py + pSize > oy
+  );
+}
